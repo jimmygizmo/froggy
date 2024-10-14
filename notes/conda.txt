@@ -1,0 +1,5 @@
+I might use Conda to install some modules into an existing Virtual Env, but I create and manage all my Python V.E.s
+using Pyenv. (Disable auto-activation in Conda and then you can use Conda only for installs and use PyEnv for creation
+and management.) I do not recommend using Conda to manage your V. Envs. Only use Conda for installs and use PyEnv for everything else.
+
+

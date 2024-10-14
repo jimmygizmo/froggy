@@ -1,0 +1,16 @@
+For now I will do all of my initial work inside on file froggy.py
+This is not a module and is just a command line program (Python executable).
+Later I may move to using a module format and still have an executable command, just packaged in a different way to also allow delivery of an importable module, when such a use case becomes aparent.
+
+So initially one will just run froggy.py and follow the standard argpars usage. Documentation/help is included.
+
+Later, if I move to a module format, then the contents of this directory will be used and then one will be able to "import froggy" and use it as part of other code more easily.
+
+In that case, this will require a "pip install froggy" and also in that case, we might still have the exact same command line functionality but we would probably only need to just type "froggy" on the command line and run it like any installed command. This will all come later, most likely.
+
+For now, just run Froggy like this:
+python ./froggy.py --option_flag_one --option_flag_two  --optional_setting_one optional_setting_value_one optional_target_value
+
+Or something very similar to that and very standard in both the Linux and the Python sense.
+
+
