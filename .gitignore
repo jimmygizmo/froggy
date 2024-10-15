@@ -1,6 +1,18 @@
 
 .idea/
 
+input/*
+!input/common
+input/common/*
+!input/common/about--input-common.txt
+
+output/*
+!output/common
+output/common/*
+!output/common/about--about-common.txt
+
+# Development con
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

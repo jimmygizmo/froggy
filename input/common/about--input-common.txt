@@ -1,0 +1,16 @@
+# About the /input/common/ directory:
+
+Shared images such as logos, template images or images used on more than one node, go in here.
+
+Your contant may have images that belong to specifc nodes and those will stay inside the directory of that node
+when processing creates your /output/ structure. However there are images that go with your templates as well as
+images that you might use on more than one node. Such 'shared' images, which are not strictly specific to one node,
+must go in /input/common/
+
+In the generated site/structure, such 'shared' images will be in /output/common/
+Links to them and/or <img> tags for them etc will be handled appropriately based on the options used.
+
+(The presence of this about file in the repository also serves to keep this important directory in the repo.)
+
+##
+#
