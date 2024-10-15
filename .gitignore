@@ -11,7 +11,7 @@ output/*
 !output/about--output.txt
 !output/common
 output/common/*
-!output/common/about--about-common.txt
+!output/common/about--output-common.txt
 
 # Development con
 
