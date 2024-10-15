@@ -1,0 +1,12 @@
+about--output.txt
+
+# About the /output/ directory:
+
+The entire structure underneath the /output/ directory is all of your generated content, in a structure parallel
+to that of your input structure under the /input/ directory.
+
+(The presence of this about file in the repository also serves to keep this important directory in the repo.)
+
+
+##
+#

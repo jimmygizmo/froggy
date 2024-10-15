@@ -2,11 +2,13 @@
 .idea/
 
 input/*
+!input/about--input.txt
 !input/common
 input/common/*
 !input/common/about--input-common.txt
 
 output/*
+!output/about--output.txt
 !output/common
 output/common/*
 !output/common/about--about-common.txt

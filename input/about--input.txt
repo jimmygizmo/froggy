@@ -1,0 +1,12 @@
+about--input.txt
+
+# About the /input/ directory:
+
+The entire structure underneath the /input/ directory is all of your source content and YAML data, in a structure
+parallel to that of your desired output structure under the /output/ directory.
+
+(The presence of this about file in the repository also serves to keep this important directory in the repo.)
+
+
+##
+#
