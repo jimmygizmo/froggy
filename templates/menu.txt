@@ -1,6 +1,28 @@
 
+<BR /><BR />
 - - - - - - - -
-{{ field1 }}
+<BR /><BR />
+{{ project }}
+<BR /><BR />
 - - - - - - - -
-{{ field2 }}
+<BR /><BR />
+{{ title }}
+<BR /><BR />
 - - - - - - - -
+<BR /><BR />
+{{ name }}
+<BR /><BR />
+- - - - - - - -
+<BR /><BR />
+{{ directory }}
+<BR /><BR />
+- - - - - - - -
+<BR /><BR />
+{{ description }}
+<BR /><BR />
+- - - - - - - -
+<BR /><BR />
+
+
+##
+#

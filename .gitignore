@@ -7,6 +7,9 @@ input/*
 input/common/*
 !input/common/about--input-common.txt
 
+catalogs/*
+!catalogs/about--catalogs.txt
+
 output/*
 !output/about--output.txt
 !output/common

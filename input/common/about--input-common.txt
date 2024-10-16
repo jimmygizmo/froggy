@@ -10,6 +10,10 @@ must go in /input/common/
 In the generated site/structure, such 'shared' images will be in /output/common/
 Links to them and/or <img> tags for them etc will be handled appropriately based on the options used.
 
+There will be no index.yaml file in either the /input/common/ or the /output/common/ directory as there is no
+YAML parsing for these directories. They only hold resource files like images which are shared. There is no
+navigable html page generated for the /common/ directory, which is what the YAML parsing does.
+
 (The presence of this about file in the repository also serves to keep this important directory in the repo.)
 
 ##
