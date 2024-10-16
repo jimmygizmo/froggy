@@ -52,6 +52,8 @@ class Froggy():
         name: str = ''
         directory: str = ''
         description: str = ''
+        valid_node: bool = False
+        valid_node_type: str | None = None
         for root, dirs, files in os.walk(INPUT):
             print(root, "consumes", end=" ")
             print(sum(os.path.getsize(os.path.join(root, name)) for name in files), end=" ")
@@ -63,21 +65,38 @@ class Froggy():
             directory = wrap_warn_html('----DIRECTORY----')
             description = wrap_warn_html('----DESCRIPTION----')
             ######## SANITY CHECKS:
+            valid_node = False
+            valid_node_type = None
             if 'item.yaml' in files and 'menu.yaml' in files:
                 raise Exception('Cannot have BOTH item.yaml AND menu.yaml in an input node directory. Nodes '
                                 'are either an item OR a menu so they will only have ONE of those files.')
             if 'item.yaml' in files and len(dirs) > 0:
                 raise Exception('Node dir is an ITEM but has dirs inside it. item.yaml file is present so this'
                                 'ITEM dir should contain NO other directories inside it.')
-            if 'menu.yaml' in files and len(dirs) < 1:
+            if 'menu.yaml' in files and len(dirs) == 0:
                 raise Exception('Node dir is a MENU but does not have any dirs inside it. menu.yaml file is present so this'
                                 'MENU dir should contain at least one node dir inside it.')
+            if 'menu.yaml' in files and len(dirs) > 0:
+                valid_node = True
+                valid_node_type = 'menu'
+            if 'item.yaml' in files and len(dirs) == 0:
+                valid_node = True
+                valid_node_type = 'item'
 
+            # TODO: This is not the best sanity check logic between here and the below. We can streamline this.
             yamldoc: str = ''
+
             if not exclude_from_yaml_parse(root):
-                with open(os.path.join(root, 'menu.yaml'), 'r') as yamlfh:
-                    yamldoc = yamlfh.read()
-                print(yamldoc)
+                if valid_node_type == 'menu':
+                    with open(os.path.join(root, 'menu.yaml'), 'r') as yamlfh:
+                        yamldoc = yamlfh.read()
+                    print(yamldoc)
+                elif valid_node_type == 'item':
+                    with open(os.path.join(root, 'item.yaml'), 'r') as yamlfh:
+                        yamldoc = yamlfh.read()
+                    print(yamldoc)
+                else:
+                    raise Exception("Invalid node_type. Must be either 'item' or 'menu'.")
 
             print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
             outfile = os.path.join(BASE, OUTPUT, 'index.html')
