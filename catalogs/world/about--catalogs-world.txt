@@ -1,0 +1,26 @@
+about--catalogs-world.txt
+
+# About the /catalogs/world/ directory:
+
+"World" is an entire input structure or 'catalog' included for documentation purposes as an example.
+
+In general about catalogs in Froggy:
+
+Any directory inside /catalogs/ is an entire input directory structure/hierarchy with all the YAML and other input
+files and directories. It is like the default input directory /input/ within the project root.
+
+Catalogs (directory structures within the top level of the /catalogs/ directory) are easily-selectable alternative
+input structures.
+
+Froggy will use the input structure you select with the --catalog option, or Froggy will default to the /input/
+input structure.
+
+An input structure, either the default one or one inside of /catalogs/, is all all of your source content and
+YAML data, in a structure arallel to that of your desired output structure under the /output/ directory.
+
+
+(The presence of this about file in the repository also serves to keep this important directory in the repo.)
+
+
+##
+#

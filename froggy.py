@@ -19,10 +19,10 @@ ABSOLUTE: bool = False  # Default mode is to use only/all relative paths. Set th
 
 # TODO: If ABSOLUTE is True we can just compose an absolute BASE here. We could re-use the BASE var or add a var.
 BASE: str = '.'
-INPUT: str = 'input'
+DEFAULT_INPUT: str = 'input'
+INPUT = os.path.join(BASE, 'catalogs/world')
 OUTPUT: str = 'output'
 TEMPLATES: str = 'templates'
-
 
 # ###################################    TYPE DEFINITIONS, GLOBAL INITIALIZATION    ####################################
 
@@ -52,7 +52,7 @@ class Froggy():
         name: str = ''
         directory: str = ''
         description: str = ''
-        for root, dirs, files in os.walk(os.path.join(BASE, INPUT)):
+        for root, dirs, files in os.walk(INPUT):
             print(root, "consumes", end=" ")
             print(sum(os.path.getsize(os.path.join(root, name)) for name in files), end=" ")
             print("bytes in", len(files), "non-directory files")
@@ -62,15 +62,20 @@ class Froggy():
             name = wrap_warn_html('----NAME----')
             directory = wrap_warn_html('----DIRECTORY----')
             description = wrap_warn_html('----DESCRIPTION----')
-            # if 'index.yaml' in files:
-            #     # files.remove('file-to-ignore.txt')  # ignore some things
-            #     print(f"An index.yaml file is present in this dir: {root}")
-            # TODO: Read YAML file here. Wrap it in a try-catch. Don't die but issue an informative WARNING/ERROR.
-            #        Also, output a WARNNING/ERROR file in the place of the index.html we could not generate.
+            ######## SANITY CHECKS:
+            if 'item.yaml' in files and 'menu.yaml' in files:
+                raise Exception('Cannot have BOTH item.yaml AND menu.yaml in an input node directory. Nodes '
+                                'are either an item OR a menu so they will only have ONE of those files.')
+            if 'item.yaml' in files and len(dirs) > 0:
+                raise Exception('Node dir is an ITEM but has dirs inside it. item.yaml file is present so this'
+                                'ITEM dir should contain NO other directories inside it.')
+            if 'menu.yaml' in files and len(dirs) < 1:
+                raise Exception('Node dir is a MENU but does not have any dirs inside it. menu.yaml file is present so this'
+                                'MENU dir should contain at least one node dir inside it.')
 
             yamldoc: str = ''
             if not exclude_from_yaml_parse(root):
-                with open(os.path.join(root, 'index.yaml'), 'r') as yamlfh:
+                with open(os.path.join(root, 'menu.yaml'), 'r') as yamlfh:
                     yamldoc = yamlfh.read()
                 print(yamldoc)
 

@@ -9,6 +9,7 @@ input/common/*
 
 catalogs/*
 !catalogs/about--catalogs.txt
+!catalogs/world
 
 output/*
 !output/about--output.txt

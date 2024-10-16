@@ -1,0 +1,14 @@
+# About the /catalogs/world/common/ or /input/common/ directory:
+
+Shared images such as logos, template images or images used on more than one node, go in here.
+
+Do not modify anyhting inside /catalogs/world/ as it should be kept here for reference.
+Do your work inside /input/ and use /catalogs/world/ as your example.
+
+NOTE: The .gitignore in this project will prevent any of your work you do inside /input/ from being added to
+your clone of the Froggy repo. You can of course change any of this to suit your needs.
+
+(The presence of this about file in the repository also serves to keep this important directory in the repo.)
+
+##
+#
