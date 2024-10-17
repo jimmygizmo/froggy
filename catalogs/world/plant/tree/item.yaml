@@ -1,2 +1,9 @@
 type: item
 title: Tree
+description: >
+  This is a Tree with a trunk, branches and leaves. Froggy item nodes are sort of like leaves on a tree. Froggy
+  menu nodes are sort of like the places in a tree where two or more branches come together. Menu nodes, like on
+  trees, are branching points and have only one parent node, but can have many child nodes. The parent node will
+  always be a menu node, but any of the other 'branches' can be either menu or item nodes. Remember the item nodes
+  are like leaves and in this way, the Froggy input structure is exactly like a real tree. Tree Frogs are really
+  excellent climbers by the way and are experts at navigating trees; hence the name Froggy.

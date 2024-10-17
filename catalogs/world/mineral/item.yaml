@@ -1,2 +1,9 @@
-type: menu
-title: In-Organic Things in The World (Mineral or Not Plant Nor Animal)
+type: item
+title: Bar of Gold - Inorganic Things in The World (Mineral, Not Plant Nor Animal)
+description: >
+  This is a beautiful bar of gold and it is not an animal and it is not a plant. One might expect a menu at this node,
+  but no, this is an item type of node and in this world, there is only one in-organic object, this gold bar.
+  In this example catalog 'The World' this node is here to show an item node at the second level, thats all. The
+  root of the structure is the first level. At least this is my convention with Froggy for the time being. I will
+  confirm what graph theory calls the levels and get in sync with that, most likely. This is after all at its core,
+  graph traversal, specifically DAGs.
