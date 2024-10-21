@@ -1,0 +1,59 @@
+# NOTE: My global object prefixes. In fully mature projects there will be extremely minimal global objects and realize
+# there is nothing wrong with using global space at all, but rather it matters when and how you do that. In early
+# projects of mine there will be generous but formal use of global objects. I do however, add a prefix, one of gr_,
+# gw_ or gx_. I find this helpful as it is also a marker that I will most likely be coming along later to move those
+# global objects inside of classes and modules. This is a very powerful and effective technique. It is important to
+# keep your code running on every push and not being agraid of using global space (especially in the early phases of
+# a project) can not only get you to a lot of good working code much faster, but can also help to you organically
+# allow the structure of the application to grow, such that you apply more formal patters (and pay the cost of doing
+# that) at the appropriate time. So don't fuss around too much with making too many classes and modules too early and
+# trying to force your objects and code you start out with globally into a place they really don't need to be yet.
+# It is more important to get your core functionality working and to develop your classes doing that core functionality.
+# This means you can and should leave a lot of the config, setup, initialization, and peripheral and helper kind of
+# stuff in global space until you have some kind of valuable working program. Certainly apply good formal patterns in
+# many places (your core functionaly, or certain parts of it only) in the early phases of an application, but don't
+# waste time and start putting structure (and extra cding time) into places where it is not helping get actual
+# demonstrable output and results. This has to do with craftsmanship primarily and eventualy robustness, extensibility,
+# flexibiliy, efficiency, performance and all those other important factors, but this also has to do with the intense
+# and critical politics of software engineering/development projects. You must be able to demonstrate value from your
+# code and something deliverable that all types of associates can appreciate, early on, from the very earliest phases
+# of your projects. This is because the politics are brutal and unfair and dangerous for your project and all team
+# members if you have a lot of coding time in early on and cannot demonstrate your core value-add output or
+# functionality. So it results in better code and your project will be much more likely not to get killed or taken
+# over or simply fail, if you follow this advice.
+# Now back to global objects we work much more with in the early phases of projects. Prefixes are essential so you
+# maintain high visibility of global objects that will later be moving into classes and modules while you work on
+# the prioritized (core functionality) classes and modules.
+# Here are the prefixes in a nutshell:
+# gr_ Global object will be primarily or exclusively READ from. Client code will not modify it or not critically/much.
+#     For example, in some cases you might have a complex structure, almost 100% READ from, but some small piece of
+#     data might be written to, such as an instance ID, but there are no race conditions to worry about.
+# gw_ Global object will be WRITTEN to. This implies race conditions. So this is one of the first things to formalize
+#     when the time is right.
+# gx_ Global object whiich will be executed such as an imported library related object or instance which might do
+#     lots of things, but which does not necessarily need to be in global space and can find a tighter local space
+#     to call a home later (for better garbage collection and better general practice perhaps.)
+# So these prefixes are among other things, reminders, indicating how LATER refactoring will affect them. We don't want
+# people reading our code to jump to conclustions about global objects, as they will. It's none of their business but
+# you have all types of middle managers reading and trying to look good reacting to static code analysis reports.
+# As a coder, it IS CORRECT to have possibly a lot of code in global space at early phases and maybe even later phases,
+# and it is inapproprate and problematic for other management to comment on this. But this does happen, so be prepared
+# to speak to it and maybe address it. You will fare much much better if you use these prefixes and therefore have
+# a demonstrable plan in place showing you KNOW you have stuff in global space and that it is well understood and
+# part of a well composed plan that addresses priorities set by that very management which might be interjecting
+# itself inappropriately. With such prefixes, you can quickly answer to such concerns and thus stay on track working
+# on the core functionality. You see that same management will hammer you in following weeks for the core functionality,
+# so you have strong reasons to manage your code-writing priorities even though the same management will for sure
+# work against you to confound the process. Welcome to the corporate world. It is always like this and has been like
+# this for the 30 plus years I have been coding professionally. It is because of how different roles operate on very
+# different motivations and measures of success. Add in the naive, fear-driven static code analysis reports (which I
+# actually love and address almost every single item in) we also have a real problem with people outside the core
+# coding team, speaking about anything at all in those reports and god-forbid, trying to have action taken on that.)
+# Security issues are a separate topic because legal issues offten do require immediate attention, but if a middle
+# manager is telling you to get stuff out of global space for the next big feature demo push, you sould push back on
+# that. That is destructive interference and it happens all the time. Put up some defenses and at least help to
+# maintain your reputation and at least use these prefixes so no one can point at a static analysis report and bad
+# mouth you and if they do, you can fire an educational shot back, If you address such issues firmly and effectively
+# as a rule, you can help non-technical middle management from causing problems with development and help to strengthen
+# your technical team in the organization. Politics is a big part of coding. more than other disciplines.
+

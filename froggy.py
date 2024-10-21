@@ -4,6 +4,8 @@
 import argparse
 import os
 import time
+from codecs import make_identity_dict
+
 import yaml
 import jinja2
 
@@ -83,16 +85,17 @@ class Froggy:
         description: str = ''
         valid_node: bool = False
         valid_node_type: str | None = None
-        for root, dirs, files in os.walk(INPUT):
-            print(root, "consumes", end=" ")
-            print(sum(os.path.getsize(os.path.join(root, name)) for name in files), end=" ")
+        for node_path, dirs, files in os.walk(INPUT):
+            print(node_path, "consumes", end=" ")
+            print(sum(os.path.getsize(os.path.join(node_path, name)) for name in files), end=" ")
             print("bytes in", len(files), "non-directory files")
             print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-            project = wrap_warn_html('----PROJECT----')
-            title = wrap_warn_html('----TITLE----')
-            name = wrap_warn_html('----NAME----')
-            directory = wrap_warn_html('----DIRECTORY----')
-            description = wrap_warn_html('----DESCRIPTION----')
+            if exclude_from_yaml_parse(node_path):
+                print(f"Skipping: {node_path}")
+                continue
+            y_type = wrap_warn_html('----TYPE----')
+            y_title = wrap_warn_html('----TITLE----')
+            y_description = wrap_warn_html('----DESCRIPTION----')
             ######## SANITY CHECKS:
             valid_node = False
             valid_node_type = None
@@ -103,49 +106,80 @@ class Froggy:
                 raise Exception('Node dir is an ITEM but has dirs inside it. item.yaml file is present so this'
                                 'ITEM dir should contain NO other directories inside it.')
             if 'menu.yaml' in files and len(dirs) == 0:
-                raise Exception(f"Node dir [{root}] is a MENU but does not have any dirs inside it. menu.yaml file "
+                raise Exception(f"Node dir [{node_path}] is a MENU but does not have any dirs inside it. menu.yaml file "
                                 "is present so this MENU dir should contain at least one node dir inside it.")
-            if 'menu.yaml' in files and len(dirs) > 0:
+
+            if 'menu.yaml' in files and len(dirs) > 0 and not exclude_from_yaml_parse(node_path):
                 valid_node = True
                 valid_node_type = 'menu'
-            if 'item.yaml' in files and len(dirs) == 0:
+                self.do_node_menu(node_path, dirs)
+
+            if 'item.yaml' in files and len(dirs) == 0 and not exclude_from_yaml_parse(node_path):
                 valid_node = True
                 valid_node_type = 'item'
+                self.do_node_item(node_path)
 
-            # TODO: This is not the best sanity check logic between here and the below. We can streamline this.
-            yamldoc: str = ''
-
-            if not exclude_from_yaml_parse(root):
-                if valid_node_type == 'menu':
-                    with open(os.path.join(root, 'menu.yaml'), 'r') as yamlfh:
-                        yamldoc = yamlfh.read()
-                    print(yamldoc)
-                elif valid_node_type == 'item':
-                    with open(os.path.join(root, 'item.yaml'), 'r') as yamlfh:
-                        yamldoc = yamlfh.read()
-                    print(yamldoc)
-                else:
-                    raise Exception("Invalid node_type. Must be either 'item' or 'menu'.")
-
-            print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-            outfile = os.path.join(BASE, OUTPUT, 'index.html')
-            content = tmpl_item.render(
-                    project=project,
-                    title=title,
-                    name=name,
-                    directory=directory,
-                    description=description,
+            if not valid_node:
+                raise Exception(
+                    f"Invalid node. [{node_path}] Must be either 'item' or 'menu' type. "
+                     "Some criteria was not met."
                 )
-            with open(outfile, mode="w", encoding="utf-8") as outfh:
-                outfh.write(content)
-                print(f"Writing: {outfile}")
-
-            print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-
-            print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-
-
     # end def go()  -  #
+
+    # TODO: Lacking a better name "do_node" means we parse the YAML, create output dir and possibly HTML, possibly
+    #         compose menu sub-content and finally, copy over all content object files.
+
+    def do_node_menu(self, node_path: str, dirs: list[str]) -> None:
+        menu_content: str = generate_menu_content(node_path, dirs)
+        yamldoc: str = ''
+        # TODO: Load this tmpl once at startup. I just slammed this do_item code in here Q & D. Will completely change.
+        with open(os.path.join(node_path, 'menu.yaml'), 'r') as yamlfh:
+            yamldoc = yamlfh.read()
+        print(yamldoc)
+        # TODO: Load YAML and get values. y_type, y_title
+        y_type = wrap_warn_html('y_type')
+        y_title = wrap_warn_html('y_title')
+        print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
+        outfile_base = os.path.join(BASE, OUTPUT, node_path)
+        if not os.path.exists(outfile_base):
+            os.makedirs(outfile_base)
+        outfile = os.path.join(outfile_base, 'index.html')
+        content = gx_tmpl_menu.render(
+            type=y_type,
+            title=y_title,
+            menu_content=menu_content,
+        )
+        with open(outfile, mode="w", encoding="utf-8") as outfh:
+            outfh.write(content)
+            print(f"Writing: {outfile}")
+
+    # end def do_node_menu()  -  #
+
+    def do_node_item(self, node_path: str) -> None:
+        yamldoc: str = ''
+        # TODO: Load this tmpl once at startup. I just slammed this do_item code in here Q & D. Will completely change.
+        with open(os.path.join(node_path, 'item.yaml'), 'r') as yamlfh:
+            yamldoc = yamlfh.read()
+        print(yamldoc)
+        # TODO: Load YAML and get values. y_type, y_title, y_description
+        y_type = wrap_warn_html('y_type')
+        y_title = wrap_warn_html('y_title')
+        y_description = wrap_warn_html('y_description')
+        print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
+        outfile_base = os.path.join(BASE, OUTPUT, node_path)
+        if not os.path.exists(outfile_base):
+            os.makedirs(outfile_base)
+        outfile = os.path.join(outfile_base, 'index.html')
+        content = gx_tmpl_item.render(
+            type=y_type,
+            title=y_title,
+            description=y_description,
+        )
+        with open(outfile, mode="w", encoding="utf-8") as outfh:
+            outfh.write(content)
+            print(f"Writing: {outfile}")
+
+    # end def do_node_item()  -  #
 # end class Froggy  -  #
 
 
@@ -168,14 +202,52 @@ def exclude_from_yaml_parse(inpath: str) -> bool:
 # end def exclude_from_yaml_parse()  -  #
 
 
+def generate_menu_content(node_path: str, dirs: list[str]) -> str:
+    c: str = "\n<LIST>\n"
+    farleft: str = "<LI>"
+    left: str = "<A HREF=\'"
+    mid: str = "/index.html\'>"
+    right: str = '</A></LI>'
+    link_type: str = ''
+    link_text: str = ''
+    for thisdir in dirs:
+        if not exclude_from_yaml_parse(thisdir):
+            # TODO: Open each dir and get the title from the YAML.
+            # We don't know if the dir is an item or menu. The canonical indicator of my design is the presence of the
+            # YAML file of the specific type. (Right now it is one or the other. Later both might be supported.)
+            menu_yaml_path = os.path.join(node_path, thisdir, 'menu.yaml')
+            item_yaml_path = os.path.join(node_path, thisdir, 'item.yaml')
+            if os.path.isfile(menu_yaml_path):
+                with open(menu_yaml_path, 'r') as yamlfh:
+                    menu_yaml_doc = yamlfh.read()
+                print(menu_yaml_doc)
+                # TODO: HACK:
+                link_text = menu_yaml_doc
+                link_type = 'CATEGORY'
+            # TODO: At this point in the design there should not be both but we'll code it a little bit to allow both.
+            #         Later I might allow both item and menu in a single node but not currently. Still, I'm not going
+            #         to code this if-else (exclusionary) I need to see it run and think more about his aspect.
+            if os.path.isfile(item_yaml_path):
+                with open(item_yaml_path, 'r') as yamlfh:
+                    item_yaml_doc = yamlfh.read()
+                print(item_yaml_doc)
+                # TODO: HACK:
+                link_text = item_yaml_doc
+                link_type = 'ITEM'
+
+            c += farleft + link_type + left + thisdir + mid + link_text + right + "\n"
+    c += "</LIST>\n\n"
+    return c
+
+
 # ###############################################    INITIALIZATION    #################################################
 
 print('###############################################################')
 print('Froggy initializing.')
 print(f"Loading jinja2 templates from dir: {TEMPLATES}")
 environment = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATES))
-tmpl_menu = environment.get_template("menu.txt")
-tmpl_item = environment.get_template("item.txt")
+gx_tmpl_menu = environment.get_template("menu.txt")
+gx_tmpl_item = environment.get_template("item.txt")
 
 
 # ################################################    INSTANTIATION    #################################################
@@ -201,6 +273,15 @@ if __name__ == '__main__':
 
 ###################################################    NOTES    ######################################################
 
+# Prefixes for global objects/variables:
+# gr_ Global object will be primarily or exclusively READ from. Client code will not modify it or not critically/much.
+#     For example, in some cases you might have a complex structure, almost 100% READ from, but some small piece of
+#     data might be written to, such as an instance ID, but there are no race conditions to worry about.
+# gw_ Global object will be WRITTEN to. This implies race conditions. So this is one of the first things to formalize
+#     when the time is right.
+# gx_ Global object whiich will be executed such as an imported library related object or instance which might do
+#     lots of things, but which does not necessarily need to be in global space and can find a tighter local space
+#     to call a home later (for better garbage collection and better general practice perhaps.)
 
 ##
 #

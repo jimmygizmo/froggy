@@ -1,20 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.2" />
+</head>
+<body>
 
-<BR /><BR />
 - - - - - - - -
 <BR /><BR />
-{{ project }}
+{{ type }}
 <BR /><BR />
 - - - - - - - -
 <BR /><BR />
 {{ title }}
-<BR /><BR />
-- - - - - - - -
-<BR /><BR />
-{{ name }}
-<BR /><BR />
-- - - - - - - -
-<BR /><BR />
-{{ directory }}
 <BR /><BR />
 - - - - - - - -
 <BR /><BR />
@@ -23,6 +21,5 @@
 - - - - - - - -
 <BR /><BR />
 
-
-##
-#
+</body>
+</html>
