@@ -6,6 +6,9 @@ input/*
 !input/common
 input/common/*
 !input/common/about--input-common.txt
+# Starter global.yaml and menu.yaml at root.
+!input/global.yaml
+!input/menu.yaml
 
 catalogs/*
 !catalogs/about--catalogs.txt
