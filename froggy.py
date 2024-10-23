@@ -4,8 +4,6 @@
 import argparse
 import os
 import time
-from codecs import make_identity_dict
-
 import yaml
 import jinja2
 
@@ -130,7 +128,8 @@ class Froggy:
     #         compose menu sub-content and finally, copy over all content object files.
 
     def do_node_menu(self, node_path: str, dirs: list[str]) -> None:
-        menu_content: str = generate_menu_content(node_path, dirs)
+        # menu_content: str = generate_menu_content(node_path, dirs)  # Classic: Effective old-school HTML composition
+        menu_content: str = render_menu_nav(node_path, dirs)  # Modern: Uses Jinja2 and looping within the template
         yamldoc: str = ''
         # TODO: Load this tmpl once at startup. I just slammed this do_item code in here Q & D. Will completely change.
         with open(os.path.join(node_path, 'menu.yaml'), 'r') as yamlfh:
@@ -240,14 +239,44 @@ def generate_menu_content(node_path: str, dirs: list[str]) -> str:
     return c
 
 
+def render_menu_nav(node_path: str, dirs: list[str]) -> str:
+    nav_links: list[tuple] = []
+    for thisdir in dirs:
+        nav_link: tuple = ()
+        link_type: str = ''
+        link_text: str = ''
+        if not exclude_from_yaml_parse(thisdir):
+            menu_yaml_path = os.path.join(node_path, thisdir, 'menu.yaml')
+            item_yaml_path = os.path.join(node_path, thisdir, 'item.yaml')
+            if os.path.isfile(menu_yaml_path):
+                with open(menu_yaml_path, 'r') as yamlfh:
+                    menu_yaml_doc = yamlfh.read()
+                print(menu_yaml_doc)
+                # TODO: HACK:
+                link_text = menu_yaml_doc
+                link_type = 'CATEGORY'
+            if os.path.isfile(item_yaml_path):
+                with open(item_yaml_path, 'r') as yamlfh:
+                    item_yaml_doc = yamlfh.read()
+                print(item_yaml_doc)
+                # TODO: HACK:
+                link_text = item_yaml_doc
+                link_type = 'ITEM'
+        nav_link = (link_type, node_path, link_text)
+        nav_links.append(nav_link)
+    return gx_tmpl_links.render(nav_links=nav_links)
+
+
 # ###############################################    INITIALIZATION    #################################################
 
 print('###############################################################')
 print('Froggy initializing.')
 print(f"Loading jinja2 templates from dir: {TEMPLATES}")
-environment = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATES))
-gx_tmpl_menu = environment.get_template("menu.txt")
-gx_tmpl_item = environment.get_template("item.txt")
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATES))
+gx_tmpl_menu = jinja_env.get_template("menu.txt")
+gx_tmpl_item = jinja_env.get_template("item.txt")
+gx_tmpl_links = jinja_env.get_template("menu-nav-links.txt")
+print(f"Jinja templates loaded: {jinja_env.list_templates()}")
 
 
 # ################################################    INSTANTIATION    #################################################

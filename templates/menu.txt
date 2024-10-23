@@ -1,3 +1,4 @@
+{# Jinja2 Template: Menu page #}
 <!DOCTYPE html>
 <html>
 <head>
