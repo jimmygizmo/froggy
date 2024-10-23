@@ -2,3 +2,11 @@ type: item
 title: Python
 description: >
   The Python is one of the largest snakes. The Python's main form of hunting is to constrict its prey.
+image: python.png
+width: 320
+height: 220
+# TODO: General notes in YAML file features:
+#   Width and height can easily be determined and then filled in here if missing or incorrect. Good feature.
+#   Resize? Sure.
+#   Filename not necessary as one in dir will be defaulted. WARNING if name listed is a mismatch and optionally fix
+#.    name in this YAML if mismatch.
