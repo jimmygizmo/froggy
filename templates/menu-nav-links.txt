@@ -8,12 +8,8 @@
 <HR />
 <LIST>
     {% for nav_link in nav_links %}
-        {# nav_link format: nav_link_type, nav_link_path, nav_link_text #}
-        {# % nav_link_type = nav_link[0] %     Trying to set a new variable like this did not work.    #}
-        {# % nav_link_path = nav_link[1] % #}
-        {# % nav_link_text = nav_link[2] % #}
-        {# <LI>{{ nav_link_type }}<A HREF=\'{{ nav_link_path }}/index.html\'>{{ nav_link_text }}</A></LI> #}
-        <LI>{{ nav_link[0] }} <A HREF=\'{{ nav_link[1] }}/index.html\'>{{ nav_link[2] }}</A></LI>
+        {# nav_link format: nav_link_type, nav_link_path_dir, nav_link_text #}
+        <LI>{{ nav_link[0] }} <A HREF='{{ nav_link[1] }}/index.html'>{{ nav_link[2] }}</A></LI>
     {% endfor %}
 </LIST>
 <BR /><BR />

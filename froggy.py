@@ -8,6 +8,10 @@ import yaml
 import jinja2
 
 
+# TODO: add option to include Drop-in Minimal CSS picker to top of pages to allow users to select a style by demoing
+#         their own content. Then once selected, the correct style link (OBTAIN/DETERMIN TBD) can be invoked.
+
+
 # ###############################################    CONFIGURATION    ##################################################
 
 VERBOSE: bool = True
@@ -68,7 +72,15 @@ class Node:
 
 class Froggy:
     def __init__(self):
-        pass
+        global_yaml_path = os.path.join(INPUT, 'global.yaml')
+        if os.path.isfile(global_yaml_path):  # TODO: If we remove this and the raise Ex, is built-in behavior SAME or BETTER?
+            with open(global_yaml_path, 'r') as yamlfh:
+                global_yaml_doc = yamlfh.read()
+            print(global_yaml_doc)
+            # TODO: Set a new global style var in self
+        else:
+            raise Exception(f"The Global YAML File for this catalog could not be found: {global_yaml_path}\n"
+                            "The root directory of any Froggy input structure must contain a valid global.yaml file.")
     # end def Froggy.__init__()  -  #
 
     def go(self) -> None:
@@ -240,6 +252,7 @@ def generate_menu_content(node_path: str, dirs: list[str]) -> str:
 
 
 def render_menu_nav(node_path: str, dirs: list[str]) -> str:
+    # print(f"RENDER MENU LINKS - node_path: {node_path}")
     nav_links: list[tuple] = []
     for thisdir in dirs:
         nav_link: tuple = ()
@@ -262,7 +275,8 @@ def render_menu_nav(node_path: str, dirs: list[str]) -> str:
                 # TODO: HACK:
                 link_text = item_yaml_doc
                 link_type = 'ITEM'
-        nav_link = (link_type, node_path, link_text)
+        # link_path_dir: str = os.path.join(node_path, thisdir)
+        nav_link = (link_type, thisdir, link_text)
         nav_links.append(nav_link)
     return gx_tmpl_links.render(nav_links=nav_links)
 
