@@ -1,2 +1,12 @@
 type: menu
-title: Animals, Insects & Other Non-Plant Organisms
+title: Animals - Animals, Insects & Other Non-Plant Organisms
+sort: 010
+# The sort: field will be used for alphanumeric ascending sorting of the dirs/nav-menu entries.
+#   Put any keys you want here and lower sorting like 001 or AAA or aaa or 0a1 etc will sort first (to the top/left).
+#   Set this in some or all of your menu.yaml AND/OR item.yaml files and you can acheive any sort order you like
+#   and you can develop your own convention as it is flexible, general alphanumeric.
+#   TODO: Make it so if there is no sort: key at all then the entry will default to sorting LAST. Much better for users.
+#
+
+##
+#

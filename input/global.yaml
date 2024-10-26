@@ -1,6 +1,22 @@
+# /global.yaml
+# This file goes in the root directory of a Froggy input structure. Variables here may propagate values anywhere into
+# the output strcture. Site-wide values live here.
+
+
 style: <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.2" />
 # Some good style sheets to try from the "Drop-In Minimal CSS" project:
 # https://dohliam.github.io/dropin-minimal-css/?basic
 #
 # holiday.css        https://holidaycss.js.org/
 # <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.2" />
+#
+# pico.css        https://github.com/picocss/pico
+# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+
+
+copyright_year: auto
+# Specify the 4-digit year or 'auto' to always render the current year.
+
+
+##
+#

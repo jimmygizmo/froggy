@@ -6,6 +6,7 @@ import os
 import time
 import yaml
 import jinja2
+import config as cfg
 
 
 # TODO: add option to include Drop-in Minimal CSS picker to top of pages to allow users to select a style by demoing
@@ -14,21 +15,6 @@ import jinja2
 
 # ###############################################    CONFIGURATION    ##################################################
 
-VERBOSE: bool = True
-
-ABSOLUTE: bool = False  # Default mode is to use only/all relative paths. Set this true when using absolute paths.
-# For BASE or any path, always specify ABSOLUTE PATHS beginning with a slash (OS-appropriate delimiter) and ending
-# with no slash or delimiter. Simply put, you do not need any trailing slashes anywhere.
-# For relative paths, you can simply state a directory name or a . and no starting slash is needed for any relative
-# path (nor should there ever be a starting slash for any relative path) and again, you should not include any
-# trailing slashes as os.path.join will handle any that might be needed and will do so in the cross-platform way.
-
-# TODO: If ABSOLUTE is True we can just compose an absolute BASE here. We could re-use the BASE var or add a var.
-BASE: str = ''
-DEFAULT_INPUT: str = 'input'
-INPUT = os.path.join(BASE, 'catalogs/world')
-OUTPUT: str = 'output'
-TEMPLATES: str = 'templates'
 
 CLEAN_SLATE: bool = False  # TODO: Not implemented yet. Will allow deletion of all output inside /output/
 # Output will be completely cleaned before the start of each Froggy run when this is true. The /output/common/
@@ -72,11 +58,12 @@ class Node:
 
 class Froggy:
     def __init__(self):
-        global_yaml_path = os.path.join(INPUT, 'global.yaml')
+        global_yaml_path = os.path.join(cfg.INPUT, 'global.yaml')
         if os.path.isfile(global_yaml_path):  # TODO: If we remove this and the raise Ex, is built-in behavior SAME or BETTER?
             with open(global_yaml_path, 'r') as yamlfh:
                 global_yaml_doc = yamlfh.read()
-            print(global_yaml_doc)
+            if cfg.LOG_TRACE:
+                print(f"[TRACE]: Global YAML doc [{global_yaml_path}]:\n{global_yaml_doc}")
             # TODO: Set a new global style var in self
         else:
             raise Exception(f"The Global YAML File for this catalog could not be found: {global_yaml_path}\n"
@@ -85,7 +72,8 @@ class Froggy:
 
     def go(self) -> None:
         print('###############################################################')
-        print(f"Froggy running at {time.strftime('%c')}")
+        if cfg.LOG_INFO:
+            print(f"Froggy running at {time.strftime('%c')}")
         outfile: str = ''
         content: str = ''
         project: str = ''
@@ -95,7 +83,7 @@ class Froggy:
         description: str = ''
         valid_node: bool = False
         valid_node_type: str | None = None
-        for node_path, dirs, files in os.walk(INPUT):
+        for node_path, dirs, files in os.walk(cfg.INPUT):
             print(node_path, "consumes", end=" ")
             print(sum(os.path.getsize(os.path.join(node_path, name)) for name in files), end=" ")
             print("bytes in", len(files), "non-directory files")
@@ -142,16 +130,21 @@ class Froggy:
     def do_node_menu(self, node_path: str, dirs: list[str]) -> None:
         # menu_content: str = generate_menu_content(node_path, dirs)  # Classic: Effective old-school HTML composition
         menu_content: str = render_menu_nav(node_path, dirs)  # Modern: Uses Jinja2 and looping within the template
-        yamldoc: str = ''
+        menu_yaml_doc: str = ''
         # TODO: Load this tmpl once at startup. I just slammed this do_item code in here Q & D. Will completely change.
-        with open(os.path.join(node_path, 'menu.yaml'), 'r') as yamlfh:
-            yamldoc = yamlfh.read()
-        print(yamldoc)
+        menu_yaml_path: str = os.path.join(node_path, 'menu.yaml')
+        with open(menu_yaml_path, 'r') as yamlfh:
+            menu_yaml_doc = yamlfh.read()
+        if cfg.LOG_TRACE:
+            print(f"[TRACE]: Menu YAML doc [{menu_yaml_path}]:\n{menu_yaml_doc}")
+        # TODO: Load YAML and get values. y_type, y_title
+        # TODO: Load YAML and get values. y_type, y_title
+        # TODO: Load YAML and get values. y_type, y_title
         # TODO: Load YAML and get values. y_type, y_title
         y_type = wrap_warn_html('y_type')
         y_title = wrap_warn_html('y_title')
         print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-        outfile_base = os.path.join(BASE, OUTPUT, node_path)
+        outfile_base = os.path.join(cfg.BASE, cfg.OUTPUT, node_path)
         if not os.path.exists(outfile_base):
             os.makedirs(outfile_base)
         outfile = os.path.join(outfile_base, 'index.html')
@@ -160,24 +153,30 @@ class Froggy:
             title=y_title,
             menu_content=menu_content,
         )
+        if cfg.LOG_TRACE:
+            print(f"[TRACE]: Writing menu file: {outfile}")
         with open(outfile, mode="w", encoding="utf-8") as outfh:
             outfh.write(content)
-            print(f"Writing: {outfile}")
 
     # end def do_node_menu()  -  #
 
     def do_node_item(self, node_path: str) -> None:
-        yamldoc: str = ''
+        item_yaml_doc: str = ''
         # TODO: Load this tmpl once at startup. I just slammed this do_item code in here Q & D. Will completely change.
+        item_yaml_path: str = os.path.join(node_path, 'item.yaml')
         with open(os.path.join(node_path, 'item.yaml'), 'r') as yamlfh:
-            yamldoc = yamlfh.read()
-        print(yamldoc)
+            item_yaml_doc = yamlfh.read()
+        if cfg.LOG_TRACE:
+            print(f"[TRACE]: Menu YAML doc [{item_yaml_path}]:\n{item_yaml_doc}")
+        # TODO: Load YAML and get values. y_type, y_title, y_description
+        # TODO: Load YAML and get values. y_type, y_title, y_description
+        # TODO: Load YAML and get values. y_type, y_title, y_description
         # TODO: Load YAML and get values. y_type, y_title, y_description
         y_type = wrap_warn_html('y_type')
         y_title = wrap_warn_html('y_title')
         y_description = wrap_warn_html('y_description')
         print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -')
-        outfile_base = os.path.join(BASE, OUTPUT, node_path)
+        outfile_base = os.path.join(cfg.BASE, cfg.OUTPUT, node_path)
         if not os.path.exists(outfile_base):
             os.makedirs(outfile_base)
         outfile = os.path.join(outfile_base, 'index.html')
@@ -186,9 +185,10 @@ class Froggy:
             title=y_title,
             description=y_description,
         )
+        if cfg.LOG_TRACE:
+            print(f"[TRACE]: Writing item file: {outfile}")
         with open(outfile, mode="w", encoding="utf-8") as outfh:
             outfh.write(content)
-            print(f"Writing: {outfile}")
 
     # end def do_node_item()  -  #
 # end class Froggy  -  #
@@ -204,8 +204,8 @@ def wrap_warn_html(instr: str) -> str:
 def exclude_from_yaml_parse(inpath: str) -> bool:
     path_parts: tuple = os.path.split(inpath)
     if path_parts[-1] == 'common':
-        if VERBOSE:
-            print(f"Skipping 'common' dir, which is not a node for YAML parsing and HTML generation. The common "
+        if cfg.LOG_SKIPPING_DEBUG:
+            print(f"[DEBUG]: Skipping 'common' dir, which is not a node for YAML parsing and HTML generation. The common "
                   "directory is not actually a node, just a directory for shared images or other resources to live.")
         return True
     else:
@@ -231,7 +231,8 @@ def generate_menu_content(node_path: str, dirs: list[str]) -> str:
             if os.path.isfile(menu_yaml_path):
                 with open(menu_yaml_path, 'r') as yamlfh:
                     menu_yaml_doc = yamlfh.read()
-                print(menu_yaml_doc)
+                if cfg.LOG_TRACE:
+                    print(f"[TRACE]: Menu YAML doc: {menu_yaml_doc}")
                 # TODO: HACK:
                 link_text = menu_yaml_doc
                 link_type = 'CATEGORY'
@@ -241,7 +242,8 @@ def generate_menu_content(node_path: str, dirs: list[str]) -> str:
             if os.path.isfile(item_yaml_path):
                 with open(item_yaml_path, 'r') as yamlfh:
                     item_yaml_doc = yamlfh.read()
-                print(item_yaml_doc)
+                if cfg.LOG_TRACE:
+                    print(f"[TRACE]: Item YAML doc: {item_yaml_doc}")
                 # TODO: HACK:
                 link_text = item_yaml_doc
                 link_type = 'ITEM'
@@ -264,16 +266,22 @@ def render_menu_nav(node_path: str, dirs: list[str]) -> str:
             if os.path.isfile(menu_yaml_path):
                 with open(menu_yaml_path, 'r') as yamlfh:
                     menu_yaml_doc = yamlfh.read()
-                print(menu_yaml_doc)
-                # TODO: HACK:
-                link_text = menu_yaml_doc
+                if cfg.LOG_TRACE:
+                    print(f"[TRACE]: Menu YAML doc: {menu_yaml_doc}")
+                # ****************************
+                yamldata = yaml.load(menu_yaml_doc, Loader=yaml.SafeLoader)
+                print(yamldata)
+                link_text = yamldata['title']
                 link_type = 'CATEGORY'
             if os.path.isfile(item_yaml_path):
                 with open(item_yaml_path, 'r') as yamlfh:
                     item_yaml_doc = yamlfh.read()
-                print(item_yaml_doc)
-                # TODO: HACK:
-                link_text = item_yaml_doc
+                if cfg.LOG_TRACE:
+                    print(f"[TRACE]: Item YAML doc: {item_yaml_doc}")
+                # ****************************
+                yamldata = yaml.load(item_yaml_doc, Loader=yaml.SafeLoader)
+                print(yamldata)
+                link_text = yamldata['title']
                 link_type = 'ITEM'
         # link_path_dir: str = os.path.join(node_path, thisdir)
         nav_link = (link_type, thisdir, link_text)
@@ -283,14 +291,17 @@ def render_menu_nav(node_path: str, dirs: list[str]) -> str:
 
 # ###############################################    INITIALIZATION    #################################################
 
-print('###############################################################')
-print('Froggy initializing.')
-print(f"Loading jinja2 templates from dir: {TEMPLATES}")
-jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATES))
+if cfg.LOG_INFO:
+    print('###############################################################')
+    print('Froggy initializing.')
+if cfg.LOG_INIT:
+    print(f"Loading jinja2 templates from dir: {cfg.TEMPLATES}")
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(cfg.TEMPLATES))
 gx_tmpl_menu = jinja_env.get_template("menu.txt")
 gx_tmpl_item = jinja_env.get_template("item.txt")
 gx_tmpl_links = jinja_env.get_template("menu-nav-links.txt")
-print(f"Jinja templates loaded: {jinja_env.list_templates()}")
+if cfg.LOG_INIT:
+    print(f"Jinja templates loaded: {jinja_env.list_templates()}")
 
 
 # ################################################    INSTANTIATION    #################################################
@@ -301,7 +312,6 @@ froggy: Froggy = Froggy()
 # ###############################################    MAIN EXECUTION    #################################################
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser(
         prog='Froggy',
         description='Simple Python+YAML system to generate potentially large hierarchical web content structures ' \
@@ -309,8 +319,6 @@ if __name__ == '__main__':
         epilog='Text at the bottom of help')
 
     froggy.go()
-    # Kick it off from here.
-    # Not much code will be here.
 # end if __name__ main  -  #
 
 

@@ -1,0 +1,33 @@
+
+<!-- Drop-In CSS Style Switcher - Adds a pulldown menu at page top to try out styles. Get the link after choosing. -->
+<!-- Not all the styles/themes provide a simple link. You have to look at the GitHub or website for each one. -->
+
+ADD THIS SCRIPT TAG (and enable it) TO ADD THE STYLE/THEME SAMPLER PULLDOWN. ADD IT TO THE VERY TOP OF THE BODY.
+
+<!-- <script src="https://dohliam.github.io/dropin-minimal-css/switcher.js" type="text/javascript"></script> -->
+
+------------------------------------------------
+
+RELATED INFO IN global.yaml
+
+style: <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.2" />
+# Some good style sheets to try from the "Drop-In Minimal CSS" project:
+# https://dohliam.github.io/dropin-minimal-css/?basic
+#
+# holiday.css        https://holidaycss.js.org/
+# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/holiday.css@0.11.2" />
+#
+# pico.css        https://github.com/picocss/pico
+# <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+
+
+-----------------------------------------------------------
+
+BASICALLY YOU ENABLE THE PULLDOWN FOR A WHILE AND TRY OUT THE THEMES.
+Some of the have links, some don't. I'm only advising on the quick/easy method at the moment and that is you
+will need to read the website and/or the GitHub page or the docs for any style you like. Then hope for a single
+third-party-hosted stylesheet link you can add to your HEAD section.
+
+Later versions of Froggy may support more complex style installs/setups, and it is simple enough to customize this
+aspect with small modifications to Froggy Python code and your Jinja2 templates.
+
